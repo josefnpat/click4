@@ -9,13 +9,14 @@ function cm.new(init)
   self.getHeight = cm.getHeight
   self.getWidth = cm.getWidth
   self.getEntryArea = cm.getEntryArea
+  self.mouseInArea = cm.mouseInArea
   self.data = init.data or {}
   self.color_off = init.color_off or {0,0,0}
   self.color_on = init.color_on or {255,255,255}
   self.color_disabled = init.color_disabled or {127,127,127}
-  self.padding = init.padding or 4
-  self.elementpadding = init.elementpadding or 4
-  self.selectpadding = init.selectpadding or 2
+  self.padding = init.padding or 2
+  self.elementpadding = init.elementpadding or 2
+  self.selectpadding = init.selectpadding or 1
   self.x,self.y,self.w,self.h = 0,0,0,0
 
   return self
@@ -57,15 +58,20 @@ function cm:getEntryArea(index)
     self.w,f:getHeight()
 end
 
+function cm:mouseInArea()
+  local mx,my = love.mouse.getPosition()
+  return mx >= self.x and mx <= self.x + self.w and my >= self.y and my <= self.y + self.h
+end
+
 function cm:update(dt)
   local mx,my = love.mouse.getPosition()
+  local click = love.mouse.isDown(1,2,3)
   for i,v in pairs(self.data) do
     v.hover = false
     local x,y,w,h = self:getEntryArea(i)
     if mx >= x and mx <= x+w and my >= y and my <= y+h then
       v.hover = true
-      if love.mouse.isDown(1,2,3) then
-        print('wat')
+      if click then
         if v.exe then
           v.exe()
         end
