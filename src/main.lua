@@ -50,16 +50,18 @@ end
 ops = {}
 
 table.insert(ops,{
-  label = "NOP", -- No Operation
+  label = "NOP",
+  info = "No Operation",
   exe = function(self)
   end,
   arg = 0,
 })
 
 table.insert(ops,{
-  label = "INC", -- Increment
+  label = "INC",
+  info = "Increment register defined by ARG1.",
   exe = function(self)
-    local newval = self.registers[self.args[1] - 1] + 1
+    local newval = self.registers[self.args[1]] + 1
     if newval > 2^bits-1 then
       newval = 0
     end
@@ -69,9 +71,10 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "DEC", -- Decrement
+  label = "DEC",
+  info = "Decrement register defined by ARG1.",
   exe = function(self)
-    local newval = self.registers[self.args[1] - 1] - 1
+    local newval = self.registers[self.args[1]] - 1
     if newval < 0 then
       newval = 2^bits-1
     end
@@ -81,7 +84,8 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "QSOUND", -- Queue Sound
+  label = "QSOUND",
+  info = "Enqueue sound as defined by ARG1",
   exe = function(self)
     self.qsound:enqueue(sounds[self.registers[self.args[1]]])
   end,
@@ -89,7 +93,8 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "JUMP", -- Jump
+  label = "JUMP",
+  info = "Change program counter to position X[ARG1,ARG2] Y[ARG1,ARG2]",
   exe = function(self)
     local x = (self.args[1])*16 + self.args[2]
     local y = (self.args[3])*16 + self.args[4]
@@ -99,7 +104,8 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "RJUMP", -- Relative Jump
+  label = "RJUMP",
+  info = "Increment program counter by ARG1+1",
   exe = function(self)
     self.pc = (self.pc + self.args[1] + 1)%(width*height)
   end,
@@ -107,10 +113,11 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "CRSZ", -- Compare Register Skip Zero
+  label = "CRSZ",
+  info = "Increment program counter by 2 if register defined by ARG1 is zero.",
   exe = function(self)
     if self.registers[ self.args[1] ] == 0 then
-      self.pc = (self.pc + 1) % (width*height)
+      self.pc = (self.pc + 2) % (width*height)
     end
   end,
   arg = 1,
@@ -148,6 +155,7 @@ function context_menu_data(nx,ny)
         color=color(i+1),
         label_left=i,
         label_right=ops[i+1].label,
+        tooltip=(ops[i+1].info or "").."\n[Uses "..ops[i+1].arg.." arg(s)]",
         exe=function()
           database:setMap(selected.x,selected.y,i)
         end,

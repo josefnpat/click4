@@ -56,6 +56,21 @@ function cm:draw(x,y)
       if v.label_right then
         love.graphics.printf(v.label_right,vx,vy,vw,"right")
       end
+      if v.tooltip and v.hover and v.hover > 1 then
+        local ttx,tty = vx+vw+self.padding*3,vy
+        local ttw = 100
+        local f = love.graphics.getFont()
+        local ttw,wrappedtext = f:getWrap(v.tooltip,ttw)
+        local tth = #wrappedtext * f:getHeight()
+
+        love.graphics.setColor(self.color_on)
+        love.graphics.rectangle("fill",
+          ttx-self.padding,tty-self.padding,
+          ttw+self.padding*2,tth+self.padding*2)
+        love.graphics.setColor(self.color_off)
+        love.graphics.printf(v.tooltip,ttx,tty,ttw)
+
+      end
     end
   end
 end
@@ -75,16 +90,17 @@ function cm:update(dt)
   local mx,my = love.mouse.getPosition()
   local click = love.mouse.isDown(1,2,3)
   for i,v in pairs(self.data) do
-    v.hover = false
     local x,y,w,h = self:getEntryArea(i)
     if mx >= x and mx <= x+w and my >= y and my <= y+h then
-      v.hover = true
+      v.hover = (v.hover or 0) + dt
       if click then
         if v.exe then
           v.exe()
         end
         return true
       end
+    else
+      v.hover = nil
     end
   end
   return false
