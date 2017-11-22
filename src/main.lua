@@ -1,5 +1,8 @@
 io.stdout:setvbuf("no")
 
+git_hash,git_count = "missing git.lua",-1
+pcall( function() return require("git") end );
+
 width = 64
 height = 64
 scale = 8
@@ -307,7 +310,7 @@ function set_mode(index)
   if current_mode.enter then
     current_mode:enter()
   end
-  love.window.setTitle("Mode: "..current_mode.label)
+  love.window.setTitle("Click4 (v"..git_count..":"..git_hash..") [Mode: "..current_mode.label.."]")
 end
 
 function get_mode()
