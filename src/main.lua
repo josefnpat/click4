@@ -192,6 +192,7 @@ table.insert(ops,{
 
 table.insert(ops,{
   label = "INPUT",
+  info = "Copy values of WASD or Up, Right, Down, Left into the register defined by ARG1.",
   exe = function(self)
     self.registers[ self.args[1] ] =
       (love.keyboard.isDown("w",   "up") and 2^0 or 0)+
@@ -200,6 +201,17 @@ table.insert(ops,{
       (love.keyboard.isDown("d", "left") and 2^3 or 0)
   end,
   arg = 1,
+})
+
+table.insert(ops,{
+  label = "NAND",
+  info = "NAND the values of registers defined by ARG1 and ARG2 and store in register defined by ARG0.",
+  exe = function(self)
+    local a = self.registers[ self.args[2] ]
+    local b = self.registers[ self.args[3] ]
+    self.registers[ self.args[1] ] = bit.band(bit.bnot(bit.band(a,b)),15)
+  end,
+  arg = 3,
 })
 
 for i = #ops,16 do
