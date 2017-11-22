@@ -9,7 +9,7 @@ scale = 8
 debug_mode = false
 contrast = 31
 darkness = 15
-clock_speed = 0.25
+clock_speed = 1/4--1024
 
 bits = 4
 
@@ -155,6 +155,40 @@ table.insert(ops,{
   arg = 2,
 })
 
+table.insert(ops,{
+  label = "DRAW",
+  info = "Draw area of screen with SourceX[R0+R1], SourceY[R2+R3], Width[R4] plus 1, Height[R5] plus 1, TargetX[R6+R7], TargetY[R8+R9]",
+  exe = function(self)
+
+    local sx = (self.registers[0])*16 + self.registers[1]
+    local sy = (self.registers[2])*16 + self.registers[3]
+
+    local w = self.registers[4] + 1
+    local h = self.registers[5] + 1
+
+    local tx = (self.registers[6])*16 + self.registers[7]
+    local ty = (self.registers[8])*16 + self.registers[9]
+
+    for x = sx,sx+w do
+      for y = sy,sy+h do
+        local val = database:getMap(x,y)
+        self.buffer:setMap(tx+x-sx+1,ty+y-sy+1,val)
+      end
+    end
+
+  end,
+  arg = 0,
+})
+
+table.insert(ops,{
+  label = "COPY",
+  info = "Copy the contents of register defined by ARG1 to the contents of register defined by ARG2.",
+  exe = function(self)
+    self.registers[ self.args[2] ] = self.registers[ self.args[1] ]
+  end,
+  arg = 2,
+})
+
 for i = #ops,16 do
   table.insert(ops,{
     label="N/A",
@@ -209,7 +243,7 @@ function context_menu_data(nx,ny)
           image:setPixel(x-1,y-1,unpack(color(database:getMap(x,y)+1)))
         end
       end
-      image:encode("png","output.png")
+      image:encode("png","cart.png")
     end,
   })
 
@@ -218,9 +252,9 @@ function context_menu_data(nx,ny)
     exe=function()
       load_program:reset()
 
-      if love.filesystem.isFile("input.png") then
+      if love.filesystem.isFile("cart.png") then
 
-        local file = love.image.newImageData("input.png")
+        local file = love.image.newImageData("cart.png")
 
         load_program.data = function(self,x,y)
           local r,g,b = file:getPixel(x-1,y-1)
@@ -240,6 +274,16 @@ function context_menu_data(nx,ny)
 
         load_program.data = function(self,x,y) return math.random(0,2^bits) end
 
+      end
+    end,
+  })
+
+  table.insert(cdata,{
+    label="Reset",
+    exe=function()
+      load_program:reset()
+      load_program.data = function()
+        return 0
       end
     end,
   })
@@ -341,7 +385,8 @@ end
 function mode_run:update(dt)
   self.dt = self.dt + dt
   self.qsound:update(dt)
-  if self.dt > clock_speed then
+
+  while self.dt > clock_speed do
     self.dt = self.dt - clock_speed
     if not self.op then
       self.op = ops[database:get(self.pc)+1]
