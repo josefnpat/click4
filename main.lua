@@ -17,6 +17,7 @@ love.graphics.setFont(font)
 
 contextmenulib = require"contextmenu"
 databaselib = require"database"
+require"hsvtorgb"
 
 ops = {}
 for i = 1,16 do
@@ -31,18 +32,16 @@ end
 
 function color(index)
   local i = index-1
-  local bit0 = i%2==1
-  local bit1 = math.floor(i/2)%2==1
-  local bit2 = math.floor(i/4)%2==1
-  local bit3 = math.floor(i/8)%2==1
-  local r = (bit0 and (255-contrast) or contrast)-darkness
-  local g = (bit1 and (255-contrast) or contrast)-darkness
-  local b = (bit2 and (255-contrast) or contrast)-darkness
-  return {
-    math.floor(r/(bit3 and 2 or 1)),
-    math.floor(g/(bit3 and 2 or 1)),
-    math.floor(b/(bit3 and 2 or 1)),
-  }
+  if i == 0 then
+    return {hsvtorgb(0,0,0.125,1)}
+  elseif index == 16 then
+    return {hsvtorgb(0,0,0.875,1)}
+  else
+    local h = (i-1)%14/14
+    local s = 1
+    local v = 1
+    return {hsvtorgb(h,s,v,1)}
+  end
 end
 
 function context_menu_data()
@@ -66,10 +65,46 @@ function context_menu_data()
 
   table.insert(cdata,{
     label="Save",
+    exe=function()
+      local image = love.image.newImageData(width,height)
+      for x = 1,width do
+        for y = 1,height do
+          image:setPixel(x-1,y-1,unpack(color(database:getMap(x,y)+1)))
+        end
+      end
+      image:encode("png","output.png")
+    end,
   })
 
   table.insert(cdata,{
     label="Load",
+    exe=function()
+      load_program:reset()
+
+      if love.filesystem.isFile("input.png") then
+
+        local file = love.image.newImageData("input.png")
+
+        load_program.data = function(self,x,y)
+          local r,g,b = file:getPixel(x-1,y-1)
+          local best_index = 0
+          local best = math.huge
+          for i = 0,bits^2 do
+            local nr,ng,nb = unpack(color(i+1))
+            local distance = math.sqrt( (r-nr)^2 + (g-ng)^2 + (b-nb)^2 )
+            if distance < best then
+              best_index,best = i,distance
+            end
+          end
+          return best_index
+        end
+
+      else
+
+        load_program.data = function(self,x,y) return math.random(0,2^bits) end
+
+      end
+    end,
   })
 
   table.insert(cdata,{
@@ -86,13 +121,19 @@ end
 clock = 0
 
 load_program = {}
+load_program.data = function()
+  return 0
+end
+function load_program:reset()
+  self.dt,self.x,self.y,self.done = nil,nil,nil,nil
+end
 function load_program:update(count)
   if self.dt == nil then
     self.dt,self.x,self.y = 0,1,1
   end
   if self.done ~= true then
     for i = 1,count do
-      database:setMap(self.x,self.y,0)
+      database:setMap(self.x,self.y,self:data(self.x,self.y))
       self.x = self.x + 1
       if self.x > width then
         self.x = 1
