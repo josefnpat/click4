@@ -59,6 +59,24 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
+  label = "SET",
+  info = "Set contents of register defined by ARG2 with value of ARG1.",
+  exe = function(self)
+    self.registers[ self.args[2] ] = self.args[1]
+  end,
+  arg = 2,
+})
+
+table.insert(ops,{
+  label = "COPY",
+  info = "Copy the contents of register defined by ARG1 to the contents of register defined by ARG2.",
+  exe = function(self)
+    self.registers[ self.args[2] ] = self.registers[ self.args[1] ]
+  end,
+  arg = 2,
+})
+
+table.insert(ops,{
   label = "INC",
   info = "Increment register defined by ARG1.",
   exe = function(self)
@@ -85,13 +103,28 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "QSND",
-  info = "Enqueue sound as defined by ARG1.",
+  label = "NAND",
+  info = "NAND the values of registers defined by ARG1 and ARG2 and store in register defined by ARG0.",
   exe = function(self)
-    self.qsound:enqueue(sounds[self.registers[self.args[1]]])
+    local a = self.registers[ self.args[2] ]
+    local b = self.registers[ self.args[3] ]
+    self.registers[ self.args[1] ] = bit.band(bit.bnot(bit.band(a,b)),15)
+  end,
+  arg = 3,
+})
+
+table.insert(ops,{
+  label = "CRSZ",
+  info = "Increment program counter by 2 if register defined by ARG1 is zero.",
+  exe = function(self)
+    if self.registers[ self.args[1] ] == 0 then
+      self.pc = (self.pc + 2) % (width*height)
+    end
   end,
   arg = 1,
 })
+
+
 
 table.insert(ops,{
   label = "JMP",
@@ -109,17 +142,6 @@ table.insert(ops,{
   info = "Increment program counter by ARG1 plus 1.",
   exe = function(self)
     self.pc = (self.pc + self.args[1] + 1)%(width*height)
-  end,
-  arg = 1,
-})
-
-table.insert(ops,{
-  label = "CRSZ",
-  info = "Increment program counter by 2 if register defined by ARG1 is zero.",
-  exe = function(self)
-    if self.registers[ self.args[1] ] == 0 then
-      self.pc = (self.pc + 2) % (width*height)
-    end
   end,
   arg = 1,
 })
@@ -147,13 +169,18 @@ table.insert(ops,{
   arg = 0,
 })
 
+
 table.insert(ops,{
-  label = "SET",
-  info = "Set contents of register defined by ARG2 with value of ARG1.",
+  label = "INPUT",
+  info = "Copy values of WASD or Up, Right, Down, Left into the register defined by ARG1.",
   exe = function(self)
-    self.registers[ self.args[2] ] = self.args[1]
+    self.registers[ self.args[1] ] =
+      (love.keyboard.isDown("w",   "up") and 2^0 or 0)+
+      (love.keyboard.isDown("a","right") and 2^1 or 0)+
+      (love.keyboard.isDown("s", "down") and 2^2 or 0)+
+      (love.keyboard.isDown("d", "left") and 2^3 or 0)
   end,
-  arg = 2,
+  arg = 1,
 })
 
 table.insert(ops,{
@@ -182,36 +209,12 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "COPY",
-  info = "Copy the contents of register defined by ARG1 to the contents of register defined by ARG2.",
+  label = "QSND",
+  info = "Enqueue sound as defined by ARG1.",
   exe = function(self)
-    self.registers[ self.args[2] ] = self.registers[ self.args[1] ]
-  end,
-  arg = 2,
-})
-
-table.insert(ops,{
-  label = "INPUT",
-  info = "Copy values of WASD or Up, Right, Down, Left into the register defined by ARG1.",
-  exe = function(self)
-    self.registers[ self.args[1] ] =
-      (love.keyboard.isDown("w",   "up") and 2^0 or 0)+
-      (love.keyboard.isDown("a","right") and 2^1 or 0)+
-      (love.keyboard.isDown("s", "down") and 2^2 or 0)+
-      (love.keyboard.isDown("d", "left") and 2^3 or 0)
+    self.qsound:enqueue(sounds[self.registers[self.args[1]]])
   end,
   arg = 1,
-})
-
-table.insert(ops,{
-  label = "NAND",
-  info = "NAND the values of registers defined by ARG1 and ARG2 and store in register defined by ARG0.",
-  exe = function(self)
-    local a = self.registers[ self.args[2] ]
-    local b = self.registers[ self.args[3] ]
-    self.registers[ self.args[1] ] = bit.band(bit.bnot(bit.band(a,b)),15)
-  end,
-  arg = 3,
 })
 
 for i = #ops,16 do
@@ -232,6 +235,27 @@ function color(index)
     local s = 1
     local v = 1
     return {hsvtorgb(h,s,v,1)}
+  end
+end
+
+function load_cart_from_image(cart)
+  if love.filesystem.isFile(cart) then
+    local file = love.image.newImageData(cart)
+    load_program.data = function(self,x,y)
+      local r,g,b = file:getPixel(x-1,y-1)
+      local best_index = 0
+      local best = math.huge
+      for i = 0,bits^2 do
+        local nr,ng,nb = unpack(color(i+1))
+        local distance = math.sqrt( (r-nr)^2 + (g-ng)^2 + (b-nb)^2 )
+        if distance < best then
+          best_index,best = i,distance
+        end
+      end
+      return best_index
+    end
+  else
+    load_program.data = function(self,x,y) return math.random(0,2^bits) end
   end
 end
 
@@ -272,34 +296,12 @@ function context_menu_data(nx,ny)
     end,
   })
 
+
   table.insert(cdata,{
     label="Load",
     exe=function()
       load_program:reset()
-
-      if love.filesystem.isFile("cart.png") then
-
-        local file = love.image.newImageData("cart.png")
-
-        load_program.data = function(self,x,y)
-          local r,g,b = file:getPixel(x-1,y-1)
-          local best_index = 0
-          local best = math.huge
-          for i = 0,bits^2 do
-            local nr,ng,nb = unpack(color(i+1))
-            local distance = math.sqrt( (r-nr)^2 + (g-ng)^2 + (b-nb)^2 )
-            if distance < best then
-              best_index,best = i,distance
-            end
-          end
-          return best_index
-        end
-
-      else
-
-        load_program.data = function(self,x,y) return math.random(0,2^bits) end
-
-      end
+      load_cart_from_image("cart.png")
     end,
   })
 
@@ -356,11 +358,7 @@ database = databaselib.new{width=width}
 
 function love.load()
   set_res()
-  for x = 1,width do
-    for y = 1,height do
-      database:setMap(x,y,math.random(0,2^bits))
-    end
-  end
+  load_cart_from_image("default.png")
 end
 
 function love.draw()
