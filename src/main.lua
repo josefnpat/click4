@@ -51,7 +51,7 @@ ops = {}
 
 table.insert(ops,{
   label = "NOP",
-  info = "No Operation",
+  info = "No Operation. :)",
   exe = function(self)
   end,
   arg = 0,
@@ -84,8 +84,8 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "QSOUND",
-  info = "Enqueue sound as defined by ARG1",
+  label = "QSND",
+  info = "Enqueue sound as defined by ARG1.",
   exe = function(self)
     self.qsound:enqueue(sounds[self.registers[self.args[1]]])
   end,
@@ -93,8 +93,8 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "JUMP",
-  info = "Change program counter to position X[ARG1,ARG2] Y[ARG1,ARG2]",
+  label = "JMP",
+  info = "Change program counter to position X[ARG1,ARG2] Y[ARG1,ARG2].",
   exe = function(self)
     local x = (self.args[1])*16 + self.args[2]
     local y = (self.args[3])*16 + self.args[4]
@@ -104,8 +104,8 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "RJUMP",
-  info = "Increment program counter by ARG1+1",
+  label = "RJMP",
+  info = "Increment program counter by ARG1 plus 1.",
   exe = function(self)
     self.pc = (self.pc + self.args[1] + 1)%(width*height)
   end,
@@ -121,6 +121,38 @@ table.insert(ops,{
     end
   end,
   arg = 1,
+})
+
+table.insert(ops,{
+  label = "LOAD",
+  info = "Load contents of X[R1+R2], Y[R3+R4] to R0.",
+  exe = function(self)
+    local x = (self.registers[1])*16 + self.registers[2]
+    local y = (self.registers[3])*16 + self.registers[4]
+    self.registers[0] = database:getMap(x+1,y+1)
+  end,
+  arg = 0,
+})
+
+table.insert(ops,{
+  label = "SAVE",
+  info = "Save contents of R0 to X[R1+R2], Y[R3+R4].",
+  exe = function(self)
+    local x = (self.registers[1])*16 + self.registers[2]
+    local y = (self.registers[3])*16 + self.registers[4]
+    print(x+1,y+1,self.registers[0])
+    database:setMap(x+1,y+1,self.registers[0])
+  end,
+  arg = 0,
+})
+
+table.insert(ops,{
+  label = "SET",
+  info = "Set contents of register defined by ARG2 with value of ARG1.",
+  exe = function(self)
+    self.registers[ self.args[2] ] = self.args[1]
+  end,
+  arg = 2,
 })
 
 for i = #ops,16 do
