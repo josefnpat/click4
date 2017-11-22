@@ -50,14 +50,14 @@ end
 ops = {}
 
 table.insert(ops,{
-  label = "NOP",
+  label = "NOP", -- No Operation
   exe = function(self)
   end,
   arg = 0,
 })
 
 table.insert(ops,{
-  label = "INC",
+  label = "INC", -- Increment
   exe = function(self)
     local newval = self.registers[self.args[1]] + 1
     if newval > 2^bits-1 then
@@ -69,7 +69,7 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "DEC",
+  label = "DEC", -- Decrement
   exe = function(self)
     local newval = self.registers[self.args[1]] - 1
     if newval < 0 then
@@ -81,7 +81,7 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "QSOUND",
+  label = "QSOUND", -- Queue Sound
   exe = function(self)
     self.qsound:enqueue(sounds[self.registers[self.args[1]]])
   end,
@@ -89,13 +89,31 @@ table.insert(ops,{
 })
 
 table.insert(ops,{
-  label = "JUMP",
+  label = "JUMP", -- Jump
   exe = function(self)
     local x = (self.args[1])*16 + self.args[2]
     local y = (self.args[3])*16 + self.args[4]
     self.pc = (y*width+x-1)%(width*height)
   end,
   arg = 4,
+})
+
+table.insert(ops,{
+  label = "RJUMP", -- Relative Jump
+  exe = function(self)
+    self.pc = (self.pc + self.args[1] + 1)%(width*height)
+  end,
+  arg = 1,
+})
+
+table.insert(ops,{
+  label = "CRSZ", -- Compare Register Skip Zero
+  exe = function(self)
+    if self.registers[ self.args[1] ] == 0 then
+      self.pc = (self.pc + 1) % (width*height)
+    end
+  end,
+  arg = 1,
 })
 
 for i = #ops,16 do
@@ -290,7 +308,9 @@ function mode_run:update(dt)
     end
     if self.op.arg == #self.args then
       print(self.pc..":"..self.op.label.."[" .. table.concat(self.args,",") .. "]")
-      self.op.exe(self)
+      if self.op.exe then
+        self.op.exe(self)
+      end
       self.op = nil
       self.args = {}
     else
