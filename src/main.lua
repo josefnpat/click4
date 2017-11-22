@@ -59,7 +59,7 @@ table.insert(ops,{
 table.insert(ops,{
   label = "INC", -- Increment
   exe = function(self)
-    local newval = self.registers[self.args[1]] + 1
+    local newval = self.registers[self.args[1] - 1] + 1
     if newval > 2^bits-1 then
       newval = 0
     end
@@ -71,7 +71,7 @@ table.insert(ops,{
 table.insert(ops,{
   label = "DEC", -- Decrement
   exe = function(self)
-    local newval = self.registers[self.args[1]] - 1
+    local newval = self.registers[self.args[1] - 1] - 1
     if newval < 0 then
       newval = 2^bits-1
     end
