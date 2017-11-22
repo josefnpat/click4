@@ -18,9 +18,34 @@ love.graphics.setFont(font)
 contextmenulib = require"contextmenu"
 databaselib = require"database"
 require"hsvtorgb"
+qsoundlib = require"qsound"
+
+sounds_raw = {
+  [1] = "rest",
+  [2] = "A",
+  [3] = "As",
+  [4] = "B",
+  [5] = "C",
+  [6] = "Cs",
+  [7] = "D",
+  [8] = "Ds",
+  [9] = "E",
+  [10] = "F",
+  [11] = "Fs",
+  [12] = "G",
+  [13] = "Gs",
+  [14] = "alt1",
+  [15] = "alt2",
+  [16] = "alt3",
+}
+
+sounds = {}
+for _,v in pairs(sounds_raw) do
+  table.insert(sounds,love.audio.newSource("sound/"..v..".wav","static"))
+end
 
 ops = {}
-for i = 1,16 do
+for i = 1,15 do
   table.insert(ops,{
     label = "NOP",
     exe = function(self)
@@ -29,6 +54,15 @@ for i = 1,16 do
     arg = 0,
   })
 end
+
+table.insert(ops,{
+  label = "QSOUND",
+  exe = function(self)
+    print("QSOUND["..self.args[1].."]")
+    self.qsound:enqueue(sounds[self.args[1]+1])
+  end,
+  arg = 1,
+})
 
 function color(index)
   local i = index-1
@@ -200,6 +234,7 @@ function mode_run:enter()
   self.dt = 0
   self.pc = 0
   self.registers = {}
+  self.qsound = qsoundlib.new()
   for i = 0,2^bits do
     self.registers[i] = 0 -- to test
   end
@@ -210,6 +245,7 @@ function mode_run:draw()
 end
 function mode_run:update(dt)
   self.dt = self.dt + dt
+  self.qsound:update(dt)
   if self.dt > clock_speed then
     self.dt = self.dt - clock_speed
     if not self.op then
@@ -220,7 +256,8 @@ function mode_run:update(dt)
       self.op = nil
       self.args = {}
     else
-      table.insert(self.args,database:get(self.pc)) -- to test
+      local val = database:get(self.pc+1)
+      table.insert(self.args,val)
     end
     self.pc = self.pc + 1
   end
