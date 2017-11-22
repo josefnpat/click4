@@ -40,8 +40,8 @@ sounds_raw = {
 }
 
 sounds = {}
-for _,v in pairs(sounds_raw) do
-  table.insert(sounds,love.audio.newSource("sound/"..v..".wav","static"))
+for i,v in pairs(sounds_raw) do
+  sounds[i] = love.audio.newSource("sound/"..v..".wav","static")
 end
 
 ops = {}
@@ -61,9 +61,6 @@ table.insert(ops,{
       newval = 0
     end
     self.registers[self.args[1]] = newval
-    for i,v in pairs(self.registers) do
-      print("register",i,v)
-    end
   end,
   arg = 1,
 })
@@ -76,11 +73,8 @@ table.insert(ops,{
       newval = 2^bits-1
     end
     self.registers[self.args[1]] = newval
-    for i,v in pairs(self.registers) do
-      print("register",i,v)
-    end
   end,
-  arg = 2,
+  arg = 1,
 })
 
 table.insert(ops,{
@@ -89,6 +83,16 @@ table.insert(ops,{
     self.qsound:enqueue(sounds[self.registers[self.args[1]]])
   end,
   arg = 1,
+})
+
+table.insert(ops,{
+  label = "JUMP",
+  exe = function(self)
+    local x = (self.args[1]+1)*16 + self.args[2]
+    local y = (self.args[3]+1)*16 + self.args[4]
+    self.pc = (y-1)*width+(x-1)-1
+  end,
+  arg = 4,
 })
 
 for i = #ops,16 do
@@ -112,7 +116,7 @@ function color(index)
   end
 end
 
-function context_menu_data()
+function context_menu_data(nx,ny)
 
   local cdata = {}
 
@@ -130,7 +134,7 @@ function context_menu_data()
 
   end
 
-  table.insert(cdata,{label="---"})
+  table.insert(cdata,{label="(@"..nx..","..ny..")"})
 
   table.insert(cdata,{
     label="Save",
@@ -253,25 +257,17 @@ end
 
 table.insert(modes,mode_color)
 
-mode_code = {}
-mode_code.label = "Code"
-function mode_code:draw()
-  love.graphics.setColor(255,255,255)
-  love.graphics.print("code!",32,32)
-end
-
-table.insert(modes,mode_code)
-
 mode_run = {}
 mode_run.label = "Run"
 function mode_run:enter()
+  print("RUN")
   self.buffer = databaselib.new{width=width}
   self.dt = 0
   self.pc = 0
   self.registers = {}
   self.qsound = qsoundlib.new()
   for i = 0,2^bits-1 do
-    self.registers[i] = 0 -- to test
+    self.registers[i] = 0
   end
   self.args = {}
 end
@@ -287,7 +283,7 @@ function mode_run:update(dt)
       self.op = ops[database:get(self.pc)+1]
     end
     if self.op.arg == #self.args then
-      print(self.op.label.."[" .. table.concat(self.args,",") .. "]")
+      print(self.pc..":"..self.op.label.."[" .. table.concat(self.args,",") .. "]")
       self.op.exe(self)
       self.op = nil
       self.args = {}
@@ -352,6 +348,13 @@ function love.keypressed(key)
     selected = nil
     next_mode()
   end
+  if key == "r" and mode_run.registers then
+    local s = "R: "
+    for i = 0,2^bits-1 do
+      s = s .. mode_run.registers[i] .. ","
+    end
+    print(s)
+  end
 end
 
 function love.mousepressed(x,y,button)
@@ -359,11 +362,12 @@ function love.mousepressed(x,y,button)
     selected = nil
   end
   if not selected then
+    local nx,ny = math.floor(x/scale+1),math.floor(y/scale+1)
     selected = {
-      x=math.floor(x/scale+1),
-      y=math.floor(y/scale+1),
+      x=nx,--math.floor(x/scale+1),
+      y=ny,--math.floor(y/scale+1),
       cm=contextmenulib.new{
-        data=context_menu_data(),
+        data=context_menu_data(nx-1,ny-1),
       },
     }
   end
