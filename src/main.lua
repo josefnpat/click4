@@ -189,6 +189,18 @@ table.insert(ops,{
   arg = 2,
 })
 
+table.insert(ops,{
+  label = "INPUT",
+  exe = function(self)
+    self.registers[ self.args[1] ] =
+      (love.keyboard.isDown("w",   "up") and 2^0 or 0)+
+      (love.keyboard.isDown("a","right") and 2^1 or 0)+
+      (love.keyboard.isDown("s", "down") and 2^2 or 0)+
+      (love.keyboard.isDown("d", "left") and 2^3 or 0)
+  end,
+  arg = 1,
+})
+
 for i = #ops,16 do
   table.insert(ops,{
     label="N/A",
@@ -475,8 +487,8 @@ function love.mousepressed(x,y,button)
   if not selected then
     local nx,ny = math.floor(x/scale+1),math.floor(y/scale+1)
     selected = {
-      x=nx,--math.floor(x/scale+1),
-      y=ny,--math.floor(y/scale+1),
+      x=nx,
+      y=ny,
       cm=contextmenulib.new{
         data=context_menu_data(nx-1,ny-1),
       },
