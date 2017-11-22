@@ -91,9 +91,9 @@ table.insert(ops,{
 table.insert(ops,{
   label = "JUMP",
   exe = function(self)
-    local x = (self.args[1]+1)*16 + self.args[2]
-    local y = (self.args[3]+1)*16 + self.args[4]
-    self.pc = (y-1)*width+(x-1)-1
+    local x = (self.args[1])*16 + self.args[2]
+    local y = (self.args[3])*16 + self.args[4]
+    self.pc = (y*width+x-1)%(width*height)
   end,
   arg = 4,
 })
@@ -125,19 +125,22 @@ function context_menu_data(nx,ny)
 
   if current_mode == mode_color then
 
-    for i = 1,2^bits do
+    for i = 0,2^bits-1 do
       table.insert(cdata,{
-        color=color(i),
-        label=ops[i].label,
+        color=color(i+1),
+        label_left=i,
+        label_right=ops[i+1].label,
         exe=function()
-          database:setMap(selected.x,selected.y,i-1)
+          database:setMap(selected.x,selected.y,i)
         end,
       })
     end
 
   end
 
-  table.insert(cdata,{label="(@"..nx..","..ny..")"})
+  local ni = ny*width+nx
+
+  table.insert(cdata,{label=nx..","..ny.." - "..ni})
 
   table.insert(cdata,{
     label="Save",
@@ -294,7 +297,7 @@ function mode_run:update(dt)
       local val = database:get(self.pc+1)
       table.insert(self.args,val)
     end
-    self.pc = self.pc + 1
+    self.pc = (self.pc + 1)%(width*height)
   end
 end
 
@@ -310,7 +313,7 @@ function set_mode(index)
   if current_mode.enter then
     current_mode:enter()
   end
-  love.window.setTitle("Click4 (v"..git_count..":"..git_hash..") [Mode: "..current_mode.label.."]")
+  love.window.setTitle("Click4 (v"..git_count.."#"..git_hash..") [Mode: "..current_mode.label.."]")
 end
 
 function get_mode()

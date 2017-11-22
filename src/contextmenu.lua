@@ -41,13 +41,21 @@ function cm:draw(x,y)
       love.graphics.setColor(v.color)
       love.graphics.rectangle("fill",vx,vy,vw,vh)
     end
-    if v.label then
+    if v.label or v.label_left or v.label_right then
       if v.hover then
         love.graphics.setColor(self.color_on)
       else
         love.graphics.setColor(v.exe and self.color_off or self.color_disabled)
       end
-      love.graphics.printf(v.label,vx,vy,vw,"center")
+      if v.label_left then
+        love.graphics.printf(v.label_left,vx,vy,vw,"left")
+      end
+      if v.label then
+        love.graphics.printf(v.label,vx,vy,vw,"center")
+      end
+      if v.label_right then
+        love.graphics.printf(v.label_right,vx,vy,vw,"right")
+      end
     end
   end
 end
@@ -91,7 +99,12 @@ function cm:getWidth()
   local f = love.graphics.getFont()
   local width = f:getHeight()
   for _,v in pairs(self.data) do
-    width = math.max(width,f:getWidth(v.label or ""))
+    width = math.max(width,
+      f:getWidth(v.label_left or "") +
+      f:getWidth(v.label or "") +
+      f:getWidth(v.label_right or "") +
+      (v.label == nil and 8 or 0)
+    )
   end
   return width
 end
