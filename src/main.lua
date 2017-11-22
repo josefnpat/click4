@@ -12,6 +12,7 @@ darkness = 15
 clock_speed = 1/4--1024
 
 bits = 4
+show_info = 0
 
 font = love.graphics.newImageFont("font.png",
   " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`_*#=[]'{}",
@@ -244,7 +245,7 @@ function context_menu_data(nx,ny)
 
   local ni = ny*width+nx
 
-  table.insert(cdata,{label=nx..","..ny.." - "..ni})
+  table.insert(cdata,{label_left=nx..","..ny,label_right=ni})
 
   table.insert(cdata,{
     label="Save",
@@ -355,6 +356,25 @@ function love.draw()
     love.graphics.print(scale)
   end
   current_mode:draw()
+  if show_info > 0 then
+    local f = love.graphics.getFont()
+    local s = "PC: "..(mode_run.pc or "nil").."\n"
+    local maxw = 0
+    for i = 0,2^bits-1 do
+      local ts = "R["..(i<10 and " " or "")..i.."]: " ..
+        (mode_run.registers and mode_run.registers[i] or "nil") .. "\n"
+      maxw = math.max(maxw,f:getWidth(ts))
+      s = s .. ts
+    end
+    love.graphics.setColor(255,255,255)
+    local rx = show_info == 1 and 32 or (love.graphics.getWidth()-maxw-32)
+    local ry = 32
+    local rw,rh = maxw,(2^bits+1)*f:getHeight()
+    love.graphics.rectangle("fill",rx-2,ry-2,rw+4,rh+4)
+    love.graphics.setColor(0,0,0)
+    love.graphics.printf(s,rx,ry,rw,"left")
+  end
+
 end
 
 modes = {}
@@ -471,12 +491,8 @@ function love.keypressed(key)
     selected = nil
     next_mode()
   end
-  if key == "r" and mode_run.registers then
-    local s = "R: "
-    for i = 0,2^bits-1 do
-      s = s .. mode_run.registers[i] .. ","
-    end
-    print(s)
+  if key == "r" then
+    show_info = (show_info + 1)%3
   end
 end
 
