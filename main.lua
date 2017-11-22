@@ -21,22 +21,22 @@ require"hsvtorgb"
 qsoundlib = require"qsound"
 
 sounds_raw = {
-  [1] = "rest",
-  [2] = "A",
-  [3] = "As",
-  [4] = "B",
-  [5] = "C",
-  [6] = "Cs",
-  [7] = "D",
-  [8] = "Ds",
-  [9] = "E",
-  [10] = "F",
-  [11] = "Fs",
-  [12] = "G",
-  [13] = "Gs",
-  [14] = "alt1",
-  [15] = "alt2",
-  [16] = "alt3",
+  [0] = "rest",
+  [1] = "A",
+  [2] = "As",
+  [3] = "B",
+  [4] = "C",
+  [5] = "Cs",
+  [6] = "D",
+  [7] = "Ds",
+  [8] = "E",
+  [9] = "F",
+  [10] = "Fs",
+  [11] = "G",
+  [12] = "Gs",
+  [13] = "alt1",
+  [14] = "alt2",
+  [15] = "alt3",
 }
 
 sounds = {}
@@ -45,24 +45,58 @@ for _,v in pairs(sounds_raw) do
 end
 
 ops = {}
-for i = 1,15 do
-  table.insert(ops,{
-    label = "NOP",
-    exe = function(self)
-      print("NOP"..i)
-    end,
-    arg = 0,
-  })
-end
+
+table.insert(ops,{
+  label = "NOP",
+  exe = function(self)
+  end,
+  arg = 0,
+})
+
+table.insert(ops,{
+  label = "INC",
+  exe = function(self)
+    local newval = self.registers[self.args[1]] + 1
+    if newval > 2^bits-1 then
+      newval = 0
+    end
+    self.registers[self.args[1]] = newval
+    for i,v in pairs(self.registers) do
+      print("register",i,v)
+    end
+  end,
+  arg = 1,
+})
+
+table.insert(ops,{
+  label = "DEC",
+  exe = function(self)
+    local newval = self.registers[self.args[1]] - 1
+    if newval < 0 then
+      newval = 2^bits-1
+    end
+    self.registers[self.args[1]] = newval
+    for i,v in pairs(self.registers) do
+      print("register",i,v)
+    end
+  end,
+  arg = 2,
+})
 
 table.insert(ops,{
   label = "QSOUND",
   exe = function(self)
-    print("QSOUND["..self.args[1].."]")
-    self.qsound:enqueue(sounds[self.args[1]+1])
+    self.qsound:enqueue(sounds[self.registers[self.args[1]]])
   end,
   arg = 1,
 })
+
+for i = #ops,16 do
+  table.insert(ops,{
+    label="N/A",
+    arg=0,
+  })
+end
 
 function color(index)
   local i = index-1
@@ -87,6 +121,7 @@ function context_menu_data()
     for i = 1,2^bits do
       table.insert(cdata,{
         color=color(i),
+        label=ops[i].label,
         exe=function()
           database:setMap(selected.x,selected.y,i-1)
         end,
@@ -235,7 +270,7 @@ function mode_run:enter()
   self.pc = 0
   self.registers = {}
   self.qsound = qsoundlib.new()
-  for i = 0,2^bits do
+  for i = 0,2^bits-1 do
     self.registers[i] = 0 -- to test
   end
   self.args = {}
@@ -252,6 +287,7 @@ function mode_run:update(dt)
       self.op = ops[database:get(self.pc)+1]
     end
     if self.op.arg == #self.args then
+      print(self.op.label.."[" .. table.concat(self.args,",") .. "]")
       self.op.exe(self)
       self.op = nil
       self.args = {}

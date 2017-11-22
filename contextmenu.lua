@@ -47,7 +47,7 @@ function cm:draw(x,y)
       else
         love.graphics.setColor(v.exe and self.color_off or self.color_disabled)
       end
-      love.graphics.print(v.label,vx,vy)
+      love.graphics.printf(v.label,vx,vy,vw,"center")
     end
   end
 end
