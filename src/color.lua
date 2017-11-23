@@ -30,5 +30,19 @@ function hsvtorgb(h, s, v, a)
   elseif i == 5 then r, g, b = v, p, q
   end
 
-  return r * 255, g * 255, b * 255, a * 255
+  return math.floor(r * 255), math.floor(g * 255), math.floor(b * 255), math.floor(a * 255)
+end
+
+function color(index)
+  local i = index-1
+  if i == 0 then
+    return {hsvtorgb(0,0,0.125,1)}
+  elseif index == 16 then
+    return {hsvtorgb(0,0,0.875,1)}
+  else
+    local h = (i-1)%14/14
+    local s = 1
+    local v = 1
+    return {hsvtorgb(h,s,v,1)}
+  end
 end
