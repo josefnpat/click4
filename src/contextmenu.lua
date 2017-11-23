@@ -56,7 +56,7 @@ function cm:draw(x,y)
       if v.label_right then
         love.graphics.printf(v.label_right,vx,vy,vw,"right")
       end
-      if v.tooltip and v.hover and v.hover > 1 then
+      if v.tooltip and v.hover and v.hover > 0.25 then
         local ttx,tty = vx+vw+self.padding*3,vy
         local ttw = 100
         local f = love.graphics.getFont()

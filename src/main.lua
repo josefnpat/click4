@@ -9,7 +9,7 @@ scale = 8
 debug_mode = false
 contrast = 31
 darkness = 15
-clock_speed = 1/4--1024
+clock_speed = 1/122880 -- 4096 * 30
 
 bits = 4
 show_info = 0
@@ -176,9 +176,9 @@ table.insert(ops,{
   exe = function(self)
     self.registers[ self.args[1] ] =
       (love.keyboard.isDown("w",   "up") and 2^0 or 0)+
-      (love.keyboard.isDown("a","right") and 2^1 or 0)+
+      (love.keyboard.isDown("d","right") and 2^1 or 0)+
       (love.keyboard.isDown("s", "down") and 2^2 or 0)+
-      (love.keyboard.isDown("d", "left") and 2^3 or 0)
+      (love.keyboard.isDown("a", "left") and 2^3 or 0)
   end,
   arg = 1,
 })
@@ -210,7 +210,7 @@ table.insert(ops,{
 
 table.insert(ops,{
   label = "QSND",
-  info = "Enqueue sound as defined by ARG1.",
+  info = "Enqueue sound from register defined by ARG1.",
   exe = function(self)
     self.qsound:enqueue(sounds[self.registers[self.args[1]]])
   end,
@@ -368,7 +368,7 @@ function love.draw()
   current_mode:draw()
   if show_info > 0 then
     local f = love.graphics.getFont()
-    local s = "PC: "..(mode_run.pc or "nil").."\n"
+    local s = "PC:"..(mode_run.pc or "nil").."\n"
     local maxw = 0
     for i = 0,2^bits-1 do
       local ts = "R["..(i<10 and " " or "")..i.."]: " ..
@@ -410,7 +410,9 @@ table.insert(modes,mode_color)
 mode_run = {}
 mode_run.label = "Run"
 function mode_run:enter()
-  print("RUN")
+  if debug_mode then
+    print("RUN")
+  end
   self.buffer = databaselib.new{width=width}
   self.dt = 0
   self.pc = 0
@@ -427,14 +429,18 @@ end
 function mode_run:update(dt)
   self.dt = self.dt + dt
   self.qsound:update(dt)
-
+  local opsc = 0
   while self.dt > clock_speed do
+    opsc = opsc + 1
     self.dt = self.dt - clock_speed
     if not self.op then
       self.op = ops[database:get(self.pc)+1]
     end
     if self.op.arg == #self.args then
-      print(self.pc..":"..self.op.label.."[" .. table.concat(self.args,",") .. "]")
+      if debug_mode then
+        print(self.pc..":"..self.op.label..
+          "[" .. table.concat(self.args,",") .. "]")
+      end
       if self.op.exe then
         self.op.exe(self)
       end
@@ -445,6 +451,9 @@ function mode_run:update(dt)
       table.insert(self.args,val)
     end
     self.pc = (self.pc + 1)%(width*height)
+  end
+  if debug_mode then
+    print("performed "..opsc.." ops in this frame.")
   end
 end
 
@@ -460,7 +469,8 @@ function set_mode(index)
   if current_mode.enter then
     current_mode:enter()
   end
-  love.window.setTitle("Click4 (v"..git_count.."#"..git_hash..") [Mode: "..current_mode.label.."]")
+  love.window.setTitle("Click4 (v"..git_count.."#"..git_hash..") "..
+    "[Mode: "..current_mode.label.."]")
 end
 
 function get_mode()
