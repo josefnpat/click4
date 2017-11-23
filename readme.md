@@ -4,7 +4,7 @@ Click4 (pronounced click-ah) is a fantasy console based on nibbles.
 
 ![Screenshot](dev/ss.png)
 
-##Features:
+## Features:
 
 * Mouse driven visual editor!
 * Sixteen assembly operands!
