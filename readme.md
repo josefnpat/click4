@@ -31,6 +31,8 @@ To access primary functions or change a value in memory, **click on the 64x64 gr
 
 To change the scale of the console, **Press - or +**.
 
+To close the context menu, **Press Escape**.
+
 ## Documentation:
 
 Full op code documentation can be found [here](docs.md).
