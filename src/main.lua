@@ -19,17 +19,21 @@ font = love.graphics.newImageFont("font.png",
   0)
 love.graphics.setFont(font)
 
+mouse_image = love.graphics.newImage("mouse.png")
+
 contextmenulib = require"contextmenu"
 databaselib = require"database"
 require"color"
 qsoundlib = require"qsound"
-
+moonshine = require"moonshine"
 sounds_raw = require"sound"
 
 sounds = {}
 for i,v in pairs(sounds_raw) do
   sounds[i] = love.audio.newSource("sound/"..(v.f)..".wav","static")
 end
+
+love.mouse.setVisible(false)
 
 ops = require"ops"
 
@@ -159,6 +163,10 @@ function love.load()
 end
 
 function love.draw()
+  effect(love_draw)
+end
+
+function love_draw()
   if debug_mode then
     love.graphics.print(scale)
   end
@@ -181,13 +189,18 @@ function love.draw()
     love.graphics.setColor(0,0,0)
     love.graphics.printf(s,rx,ry,rw,"left")
   end
-
+  if current_mode.mouse then
+    local mx,my = love.mouse.getPosition()
+    love.graphics.setColor(255,255,255)
+    love.graphics.draw(mouse_image,mx,my)
+  end
 end
 
 modes = {}
 
 mode_color = {}
 mode_color.label = "Color"
+mode_color.mouse = true
 function mode_color:draw()
   database:draw()
   if selected then
@@ -331,4 +344,19 @@ end
 
 function set_res()
   love.window.setMode(width*scale,height*scale)
+  local ce
+  ce = moonshine.chain(moonshine.effects.scanlines)
+  ce = ce.chain(moonshine.effects.crt)
+  ce.parameters = {
+    scanlines = {
+      thickness=0.125,
+      opacity=0.25,
+    },
+    crt = {
+      distortionFactor = {1.03, 1.03}
+    },
+  }
+
+  effect = ce
+
 end
