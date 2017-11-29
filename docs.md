@@ -1,6 +1,6 @@
 # Click4 Documentation
 
-__v12 #fbc68c1__
+__v15 #6a46a47__
 
 ## 0: NOP
 
@@ -39,7 +39,7 @@ __v12 #fbc68c1__
 
 ## 5: NAND
 
-* Info: NAND the values of registers defined by ARG1 and ARG2 and store in register defined by ARG0.
+* Info: NAND the values of registers defined by ARG2 and ARG3 and store in register defined by ARG1.
 * Args: 3
 * Color: 182,255,0
 * Sound: Note C# [Cs.wav]

@@ -54,7 +54,7 @@ table.insert(ops,{
 
 table.insert(ops,{
   label = "NAND",
-  info = "NAND the values of registers defined by ARG1 and ARG2 and store in register defined by ARG0.",
+  info = "NAND the values of registers defined by ARG2 and ARG3 and store in register defined by ARG1.",
   exe = function(self)
     local a = self.registers[ self.args[2] ]
     local b = self.registers[ self.args[3] ]
