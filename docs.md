@@ -88,7 +88,7 @@ __v15 #6a46a47__
 
 ## 12: DRAW
 
-* Info: Draw area of screen with SourceX[R0+R1], SourceY[R2+R3], Width[R4] plus 1, Height[R5] plus 1, TargetX[R6+R7], TargetY[R8+R9]
+* Info: Draw area of screen with SourceX[R0\*16+R1], SourceY[R2\*16+R3], Width[R4] plus 1, Height[R5] plus 1, TargetX[R6\*16+R7], TargetY[R7\*16+R9]
 * Args: 0
 * Color: 72,0,255
 * Sound: Note G# [Gs.wav]
