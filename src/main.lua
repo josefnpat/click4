@@ -37,6 +37,15 @@ love.mouse.setVisible(false)
 
 ops = require"ops"
 
+autoload = false
+cart_filename = "cart.png"
+
+for i,arg in pairs(arg) do
+  if arg == "--autoload" then
+    autoload = true
+  end
+end
+
 function load_cart_from_image(cart)
   if love.filesystem.isFile(cart) then
     local file = love.image.newImageData(cart)
@@ -93,7 +102,7 @@ function context_menu_data(nx,ny)
           image:setPixel(x-1,y-1,unpack(color(database:getMap(x,y)+1)))
         end
       end
-      image:encode("png","cart.png")
+      image:encode("png",cart_filename)
     end,
   })
 
@@ -102,7 +111,7 @@ function context_menu_data(nx,ny)
     label="Load",
     exe=function()
       load_program:reset()
-      load_cart_from_image("cart.png")
+      load_cart_from_image(cart_filename)
     end,
   })
 
@@ -159,7 +168,7 @@ database = databaselib.new{width=width}
 
 function love.load()
   set_res()
-  load_cart_from_image("default.png")
+  load_cart_from_image(autoload and cart_filename or "default.png")
 end
 
 function love.draw()
