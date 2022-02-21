@@ -6,7 +6,7 @@ __v15 #6a46a47__
 
 * Info: No Operation. :)
 * Args: 0
-* Color: 255,0,218
+* Color: 31,31,31
 * Sound: Rest note [rest.wav]
 
 ## 1: SET
@@ -104,13 +104,13 @@ __v15 #6a46a47__
 
 * Info: This op is not defined.
 * Args: 0
-* Color: 255,0,218
+* Color: 255,0,109
 * Sound: Alt 2 [alt2.wav]
 
 ## 15: N/A
 
 * Info: This op is not defined.
 * Args: 0
-* Color: 255,0,109
+* Color: 223,223,223
 * Sound: Alt 3 [alt3.wav]
 
