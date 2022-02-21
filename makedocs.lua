@@ -13,10 +13,12 @@ print()
 for opi,opv in pairs(ops) do
   print("## "..(opi-1)..": "..opv.label)
   print()
-  local c = color(opi-1)
+  local c = color(opi)
   print("* Info: "..(opv.info or "This op is not defined."))
   print("* Args: "..(opv.arg))
-  print("* Color: "..c[1]..","..c[2]..","..c[3])
+  local color = c[1]..","..c[2]..","..c[3]
+  print("* Color: "..color.."\n")
+  print("  ![](https://www.thecolorapi.com/id?rgb=rgb("..color..")&format=svg)")
   print("* Sound: "..sound[opi-1].i.." ["..(sound[opi-1].f)..".wav]") --todo
   print()
 end
