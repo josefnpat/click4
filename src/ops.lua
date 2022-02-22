@@ -152,8 +152,8 @@ table.insert(ops,{
     local sx = (self.registers[0])*16 + self.registers[1]
     local sy = (self.registers[2])*16 + self.registers[3]
 
-    local w = self.registers[4] + 1
-    local h = self.registers[5] + 1
+    local w = self.registers[4]
+    local h = self.registers[5]
 
     local tx = (self.registers[6])*16 + self.registers[7]
     local ty = (self.registers[8])*16 + self.registers[9]
