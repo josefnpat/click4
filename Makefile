@@ -11,7 +11,7 @@ WORKING_DIRECTORY=$(shell pwd)
 LOVE_TARGET=${PROJECT_SHORTNAME}.love
 
 DEPS_DATA=dev/build_data
-DEPS_DOWNLOAD_TARGET=https://bitbucket.org/rude/love/downloads/
+DEPS_DOWNLOAD_TARGET=https://github.com/love2d/love/releases/download/${LOVE_VERSION}/
 DEPS_DOWNLOAD_LINUX_TARGET=http://50.116.63.25/public/love/
 DEPS_WIN32_TARGET=love-${LOVE_VERSION}\-win64.zip
 DEPS_WIN64_TARGET=love-${LOVE_VERSION}\-win32.zip
@@ -29,7 +29,7 @@ BUILD_LINUX=${PROJECT_SHORTNAME}_linux64_${BUILD_INFO}
 
 BUTLER=butler
 BUTLER_VERSION=${GIT_COUNT}[git:${GIT_HASH}]
-BUTLER_ITCHNAME=roguecraft-squadron
+BUTLER_ITCHNAME=click4
 BUTLER_ITCHUSERNAME=josefnpat
 
 ICON_DIR=src/assets/objects_icon
