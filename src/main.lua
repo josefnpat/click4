@@ -71,6 +71,20 @@ function context_menu_data(nx,ny)
 
   local cdata = {}
 
+  local ni = (ny-1)*width+nx-1
+
+  local data = database:getMap(nx,ny)
+
+  table.insert(cdata,{
+    --color=color(data+1),
+    label_left="",
+    label_right="VAL="..data,
+  })
+  table.insert(cdata,{
+    label_left=(nx-1)..","..(ny-1),
+    label_right=ni,
+  })
+
   if current_mode == mode_color then
 
     for i = 0,2^bits-1 do
@@ -78,7 +92,7 @@ function context_menu_data(nx,ny)
         color=color(i+1),
         label_left=i,
         label_right=ops[i+1].label,
-        tooltip=(ops[i+1].info or "").."\n"..
+        tooltip=(ops[i+1].info or "").." ("..ops[i+1].short..")\n"..
           "Argument Count: "..ops[i+1].arg.."\n"..
           "Sound: "..sounds_raw[i].i,
         exe=function()
@@ -88,10 +102,6 @@ function context_menu_data(nx,ny)
     end
 
   end
-
-  local ni = ny*width+nx
-
-  table.insert(cdata,{label_left=nx..","..ny,label_right=ni})
 
   table.insert(cdata,{
     label="Save",
@@ -345,7 +355,7 @@ function love.mousepressed(x,y,button)
       x=nx,
       y=ny,
       cm=contextmenulib.new{
-        data=context_menu_data(nx-1,ny-1),
+        data=context_menu_data(nx,ny),
       },
     }
   end

@@ -15,6 +15,7 @@ for opi,opv in pairs(ops) do
   print()
   local c = color(opi)
   print("* Info: "..(opv.info or "This op is not defined."))
+  print("* ShortInfo: `"..(opv.short or "").."`")
   print("* Args: "..(opv.arg))
   local color = c[1]..","..c[2]..","..c[3]
   print("* Color: "..color.."\n")
