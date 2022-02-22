@@ -96,7 +96,7 @@ table.insert(ops,{
 table.insert(ops,{
   label = "RJMP",
   info = "Increment program counter by ARG1 plus 1.",
-  short = "PC=PC+*ARG1+1",
+  short = "PC=PC+ARG1+1",
   exe = function(self)
     self.pc = (self.pc + self.args[1] + 1)%(width*height)
   end,
