@@ -78,7 +78,7 @@ table.insert(ops,{
 
 table.insert(ops,{
   label = "JMP",
-  info = "Change program counter to position X[ARG1,ARG2] Y[ARG1,ARG2].",
+  info = "Change program counter to position X[ARG1,ARG2] Y[ARG3,ARG4].",
   exe = function(self)
     local x = (self.args[1])*16 + self.args[2]
     local y = (self.args[3])*16 + self.args[4]

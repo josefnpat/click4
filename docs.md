@@ -1,6 +1,6 @@
 # Click4 Documentation
 
-__v17 #0bd1af8__
+__v18 #5f45907__
 
 ## 0: NOP
 
@@ -67,7 +67,7 @@ __v17 #0bd1af8__
 
 ## 7: JMP
 
-* Info: Change program counter to position X[ARG1,ARG2] Y[ARG1,ARG2].
+* Info: Change program counter to position X[ARG1,ARG2] Y[ARG3,ARG4].
 * Args: 4
 * Color: 0,255,145
 
