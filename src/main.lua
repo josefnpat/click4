@@ -251,6 +251,7 @@ function mode_run:enter()
     self.registers[i] = 0
   end
   self.args = {}
+  self.op = nil
 end
 function mode_run:draw()
   self.buffer:draw()
