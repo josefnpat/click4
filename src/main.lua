@@ -334,16 +334,108 @@ function love.keypressed(key)
     scale = scale + 1
     set_res()
   end
-  if key == "escape" then
-    selected = nil
+  if key == "r" then
+    show_info = (show_info + 1)%3
   end
   if key == "tab" then
     selected = nil
     next_mode()
   end
-  if key == "r" then
-    show_info = (show_info + 1)%3
+  if current_mode == mode_color then
+    if key == "escape" then
+      selected = nil
+    end
+    if selected then
+	  local update_selected = false
+      if key == "0" then
+        database:setMap(selected.x,selected.y,0)
+        update_selected = true
+      elseif key == "1" then
+        database:setMap(selected.x,selected.y,1)
+        update_selected = true
+      elseif key == "2" then
+        database:setMap(selected.x,selected.y,2)
+        update_selected = true
+      elseif key == "3" then
+        database:setMap(selected.x,selected.y,3)
+        update_selected = true
+      elseif key == "4" then
+        database:setMap(selected.x,selected.y,4)
+        update_selected = true
+      elseif key == "5" then
+        database:setMap(selected.x,selected.y,5)
+        update_selected = true
+      elseif key == "6" then
+        database:setMap(selected.x,selected.y,6)
+        update_selected = true
+      elseif key == "7" then
+        database:setMap(selected.x,selected.y,7)
+        update_selected = true
+      elseif key == "8" then
+        database:setMap(selected.x,selected.y,8)
+        update_selected = true
+      elseif key == "9" then
+        database:setMap(selected.x,selected.y,9)
+        update_selected = true
+      elseif key == "a" then
+        database:setMap(selected.x,selected.y,10)
+        update_selected = true
+      elseif key == "b" then
+        database:setMap(selected.x,selected.y,11)
+        update_selected = true
+      elseif key == "c" then
+        database:setMap(selected.x,selected.y,12)
+        update_selected = true
+      elseif key == "d" then
+        database:setMap(selected.x,selected.y,13)
+        update_selected = true
+      elseif key == "e" then
+        database:setMap(selected.x,selected.y,14)
+        update_selected = true
+      elseif key == "f" then
+        database:setMap(selected.x,selected.y,15)
+        update_selected = true
+      end
+	  if update_selected then
+	    select(selected.x,selected.y)
+	  end
+      if key == "right" then
+        select(selected.x+1,selected.y)
+      end
+      if key == "down" then
+        select(selected.x,selected.y+1)
+      end
+      if key == "left" then
+        select(selected.x-1,selected.y)
+      end
+      if key == "up" then
+        select(selected.x,selected.y-1)
+      end
+    end
+
   end
+end
+
+function select(nx,ny)
+  if ny > height then
+    ny = ny - height
+  end
+  if ny <= 0 then
+    ny = ny + height
+  end
+  if nx > width then
+    nx = nx - width
+  end
+  if nx <= 0 then
+    nx = nx + width
+  end
+  selected = {
+    x=nx,
+    y=ny,
+    cm=contextmenulib.new{
+      data=context_menu_data(nx,ny),
+    },
+  }
 end
 
 function love.mousepressed(x,y,button)
@@ -352,13 +444,7 @@ function love.mousepressed(x,y,button)
   end
   if not selected then
     local nx,ny = math.floor(x/scale+1),math.floor(y/scale+1)
-    selected = {
-      x=nx,
-      y=ny,
-      cm=contextmenulib.new{
-        data=context_menu_data(nx,ny),
-      },
-    }
+    select(nx,ny)
   end
 end
 
