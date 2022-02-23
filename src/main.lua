@@ -63,7 +63,7 @@ function load_cart_from_image(cart)
       return best_index
     end
   else
-    load_program.data = function(self,x,y) return math.random(0,2^bits) end
+    load_program.data = function(self,x,y) return math.random(0,2^bits-1) end
   end
 end
 
