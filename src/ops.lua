@@ -122,7 +122,6 @@ table.insert(ops,{
   exe = function(self)
     local x = (self.registers[1])*16 + self.registers[2]
     local y = (self.registers[3])*16 + self.registers[4]
-    print(x+1,y+1,self.registers[0])
     database:setMap(x+1,y+1,self.registers[0])
   end,
   arg = 0,
