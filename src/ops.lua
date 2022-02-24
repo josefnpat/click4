@@ -161,8 +161,8 @@ table.insert(ops,{
   sound = "G#",
   exe = function(self)
 
-    local sx = (self.registers[0])*16 + self.registers[1]
-    local sy = (self.registers[2])*16 + self.registers[3]
+    local sx = (self.registers[0])*16 + self.registers[1]+1
+    local sy = (self.registers[2])*16 + self.registers[3]+1
 
     local w = self.registers[4]
     local h = self.registers[5]
