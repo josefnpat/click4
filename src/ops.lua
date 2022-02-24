@@ -157,7 +157,7 @@ table.insert(ops,{
 table.insert(ops,{
   label = "DRAW",
   info = "Draw area of screen with SourceX[R0+R1], SourceY[R2+R3], Width[R4] plus 1, Height[R5] plus 1, TargetX[R6+R7], TargetY[R8+R9]",
-  short = "Draw X[R0*16+R1],Y[R2*16+R3] with W,H to X[R6*16+R7],Y[R8*16+R9]",
+  short = "Draw X[R0*16+R1],Y[R2*16+R3] with W[R4],H[R5] to X[R6*16+R7],Y[R8*16+R9]",
   sound = "G#",
   exe = function(self)
 
@@ -184,7 +184,7 @@ table.insert(ops,{
 table.insert(ops,{
   label = "QSND",
   info = "Enqueue sound from register defined by ARG1.",
-  short = "enqueue_sound(&ARG1)",
+  short = "enqueue_sound(*ARG1)",
   sound = "ALT1",
   exe = function(self)
     self.qsound:enqueue(sounds[self.registers[self.args[1]]])
