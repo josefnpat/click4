@@ -94,7 +94,7 @@ function context_menu_data(nx,ny)
         label_right=ops[i+1].label,
         tooltip=(ops[i+1].info or "").." ("..ops[i+1].short..")\n"..
           "Argument Count: "..ops[i+1].arg.."\n"..
-          "Sound: "..sounds_raw[i].i,
+          "Sound: "..ops[i+1].sound,
         exe=function()
           database:setMap(selected.x,selected.y,i)
         end,
@@ -193,7 +193,6 @@ function love_draw()
   if show_info > 0 then
     local f = love.graphics.getFont()
     local s = "PC:"..(mode_run.pc or "nil").."\n"
-    local maxw = 0
     for i = 0,2^bits-1 do
       local ts = "R["..(i<10 and " " or "")..i.."]: " ..
         (mode_run.registers and mode_run.registers[i] or "nil") .. "\n"
@@ -242,6 +241,7 @@ function mode_run:enter()
   if debug_mode then
     print("RUN")
   end
+  maxw = 0
   self.buffer = databaselib.new{width=width}
   self.dt = 0
   self.pc = 0

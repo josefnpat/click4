@@ -20,6 +20,6 @@ for opi,opv in pairs(ops) do
   local color = c[1]..","..c[2]..","..c[3]
   print("* Color: "..color.."\n")
   print("  ![](https://www.thecolorapi.com/id?rgb=rgb("..color..")&format=svg)")
-  print("* Sound: "..sound[opi-1].i.." ["..(sound[opi-1].f)..".wav]") --todo
+  print("* Sound: "..opv.sound.." ["..(sound[opi-1].f)..".wav]") --todo
   print()
 end

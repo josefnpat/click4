@@ -1,6 +1,6 @@
 # Click4 Documentation
 
-__v19 #e955f74__
+__v27 #14de01d__
 
 ## 0: NOP
 
@@ -10,7 +10,7 @@ __v19 #e955f74__
 * Color: 31,31,31
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(31,31,31)&format=svg)
-* Sound: Rest note [rest.wav]
+* Sound: REST [rest.wav]
 
 ## 1: SET
 
@@ -20,7 +20,7 @@ __v19 #e955f74__
 * Color: 255,0,0
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(255,0,0)&format=svg)
-* Sound: Note A [A.wav]
+* Sound: A [A.wav]
 
 ## 2: COPY
 
@@ -30,7 +30,7 @@ __v19 #e955f74__
 * Color: 255,109,0
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(255,109,0)&format=svg)
-* Sound: Note A# [As.wav]
+* Sound: A# [As.wav]
 
 ## 3: INC
 
@@ -40,7 +40,7 @@ __v19 #e955f74__
 * Color: 255,218,0
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(255,218,0)&format=svg)
-* Sound: Note B [B.wav]
+* Sound: B [B.wav]
 
 ## 4: DEC
 
@@ -50,7 +50,7 @@ __v19 #e955f74__
 * Color: 182,255,0
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(182,255,0)&format=svg)
-* Sound: Note C [C.wav]
+* Sound: C [C.wav]
 
 ## 5: NAND
 
@@ -60,7 +60,7 @@ __v19 #e955f74__
 * Color: 72,255,0
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(72,255,0)&format=svg)
-* Sound: Note C# [Cs.wav]
+* Sound: C# [Cs.wav]
 
 ## 6: CRSZ
 
@@ -70,7 +70,7 @@ __v19 #e955f74__
 * Color: 0,255,36
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(0,255,36)&format=svg)
-* Sound: Note D [D.wav]
+* Sound: D [D.wav]
 
 ## 7: JMP
 
@@ -80,17 +80,17 @@ __v19 #e955f74__
 * Color: 0,255,145
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(0,255,145)&format=svg)
-* Sound: Note D# [Ds.wav]
+* Sound: D# [Ds.wav]
 
 ## 8: RJMP
 
 * Info: Increment program counter by ARG1 plus 1.
-* ShortInfo: `PC=PC+*ARG1+1`
+* ShortInfo: `PC=PC+ARG1+1`
 * Args: 1
 * Color: 0,255,255
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(0,255,255)&format=svg)
-* Sound: Note E [E.wav]
+* Sound: E [E.wav]
 
 ## 9: LOAD
 
@@ -100,7 +100,7 @@ __v19 #e955f74__
 * Color: 0,145,255
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(0,145,255)&format=svg)
-* Sound: Note F [F.wav]
+* Sound: F [F.wav]
 
 ## 10: SAVE
 
@@ -110,17 +110,17 @@ __v19 #e955f74__
 * Color: 0,36,255
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(0,36,255)&format=svg)
-* Sound: Note F# [Fs.wav]
+* Sound: F# [Fs.wav]
 
 ## 11: INPUT
 
 * Info: Copy values of WASD or Up, Right, Down, Left into the register defined by ARG1.
-* ShortInfo: `&ARG1=INPUT`
+* ShortInfo: `*ARG1=INPUT`
 * Args: 1
 * Color: 72,0,255
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(72,0,255)&format=svg)
-* Sound: Note G [G.wav]
+* Sound: G [G.wav]
 
 ## 12: DRAW
 
@@ -130,7 +130,7 @@ __v19 #e955f74__
 * Color: 182,0,255
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(182,0,255)&format=svg)
-* Sound: Note G# [Gs.wav]
+* Sound: G# [Gs.wav]
 
 ## 13: QSND
 
@@ -140,25 +140,25 @@ __v19 #e955f74__
 * Color: 255,0,218
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(255,0,218)&format=svg)
-* Sound: Alt 1 [alt1.wav]
+* Sound: ALT1 [alt1.wav]
 
 ## 14: N/A
 
-* Info: This op is not defined.
+* Info: N/A
 * ShortInfo: `N/A`
 * Args: 0
 * Color: 255,0,109
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(255,0,109)&format=svg)
-* Sound: Alt 2 [alt2.wav]
+* Sound: ALT2 [alt2.wav]
 
 ## 15: N/A
 
-* Info: This op is not defined.
+* Info: N/A
 * ShortInfo: `N/A`
 * Args: 0
 * Color: 223,223,223
 
   ![](https://www.thecolorapi.com/id?rgb=rgb(223,223,223)&format=svg)
-* Sound: Alt 3 [alt3.wav]
+* Sound: ALT3 [alt3.wav]
 

@@ -6,6 +6,7 @@ SRC_DIR=src
 GIT_HASH=$(shell git log --pretty=format:'%h' -n 1 ${SRC_DIR})
 GIT_COUNT=$(shell git log --pretty=format:'' ${SRC_DIR} | wc -l)
 GIT_TARGET=${SRC_DIR}/git.lua
+DEFAULT_PNG=${SRC_DIR}/default.png
 WORKING_DIRECTORY=$(shell pwd)
 
 LOVE_TARGET=${PROJECT_SHORTNAME}.love
@@ -42,13 +43,15 @@ IMAGE_FILES := $(wildcard src/assets/objects/*.png)
 clean:
 	#Remove generated `${GIT_TARGET}`
 	rm -f ${GIT_TARGET}
+	#Remove generated default png
+	rm -f ${DEFAULT_PNG}
 
 .PHONY: cleanlove
 cleanlove:
 	rm -f ${LOVE_TARGET}
 
 .PHONY: love
-love: clean
+love: clean default_image
 	#Writing ${GIT_TARGET}
 	echo "git_hash,git_count = '${GIT_HASH}',${GIT_COUNT}" > ${GIT_TARGET}
 	#Make love file
@@ -155,3 +158,11 @@ deploy: all
 status:
 	#VERSION: ${BUILD_INFO}
 	butler status ${BUTLER_ITCHUSERNAME}/${BUTLER_ITCHNAME}
+
+.PHONY: default_image
+default_image:
+	sh makecart.sh cart_templates/default.click4 cart_templates/default_bg.png src/default.png
+
+.PHONY: docs
+docs:
+	sh makedocs.sh
