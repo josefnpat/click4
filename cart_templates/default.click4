@@ -1,46 +1,61 @@
-SET 0 0
-SET 1 2
+@start
+
+#Setup Draw
 SET 2 3
-SET 3 9
+SET 3 8
 SET 4 15
 SET 5 6
 SET 8 1
+#Assume SET 9 0
+
+# First Block
+SET 0 0
+SET 1 2
 SET 6 0
-SET 7 10
+SET 7 11
 DRAW
-SET 6 1
-SET 7 8
-NOP NOP
+
+# Second Block
 SET 0 1
 SET 1 0
-DRAW
-SET 6 2
+SET 6 1
 SET 7 9
-NOP NOP
+DRAW
+
+# Third Block
 SET 0 2
 SET 1 0
-NOP
+SET 6 2
+SET 7 9
 DRAW
-NOP NOP NOP NOP NOP
+
+# Wait until R11 loops
 INC 11
+# CRSZ JMP HACK
+# The only reason these don't break is because the start tag is JMP 0 0 0 0,
+# which translates into NOP NOP NOP NOP. That allows the CRSZ to skip over the
+# JMP 0 and run NOP NOP NOP.
 CRSZ 11
-JMP 0 0 0 0
+!start
+
+# Wait until R12 loops over R11 (256 ops)
 INC 12
+# CRSZ JMP HACK
 CRSZ 12
-JMP 0 0 0 0
+!start
+
 COPY 15 9
-NOP NOP
+# NOT
 NAND 15 15 15
-NOP NOP
 CRSZ 15
+# Move blocks down by modifying Y2
 INC 9
-NOP NOP NOP NOP NOP NOP NOP
+# Play sound once
 CRSZ 10
-RJMP 15
-NOP
-SET 10
-SET 0 0
+!!end
+SET 10 1
+# Play meow sound
 SET 0 13
 QSND 0
-NOP NOP NOP NOP NOP NOP NOP NOP
-JMP 0 0 0 0
+@end
+!start
