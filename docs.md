@@ -1,6 +1,6 @@
 # Click4 Documentation
 
-__v27 #14de01d__
+__v31 #b7bd2d5__
 
 ## 0: NOP
 
@@ -125,7 +125,7 @@ __v27 #14de01d__
 ## 12: DRAW
 
 * Info: Draw area of screen with SourceX[R0+R1], SourceY[R2+R3], Width[R4] plus 1, Height[R5] plus 1, TargetX[R6+R7], TargetY[R8+R9]
-* ShortInfo: `Draw X[R0*16+R1],Y[R2*16+R3] with W,H to X[R6*16+R7],Y[R8*16+R9]`
+* ShortInfo: `Draw X[R0*16+R1],Y[R2*16+R3] with W[R4],H[R5] to X[R6*16+R7],Y[R8*16+R9]`
 * Args: 0
 * Color: 182,0,255
 
@@ -135,7 +135,7 @@ __v27 #14de01d__
 ## 13: QSND
 
 * Info: Enqueue sound from register defined by ARG1.
-* ShortInfo: `enqueue_sound(&ARG1)`
+* ShortInfo: `enqueue_sound(*ARG1)`
 * Args: 1
 * Color: 255,0,218
 
