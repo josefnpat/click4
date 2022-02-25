@@ -36,3 +36,5 @@ To close the context menu, **Press Escape**.
 ## Documentation:
 
 Full op code documentation can be found [here](docs.md).
+
+Usage and Language Specification can be found [here](usage_and_lang_spec.md)
