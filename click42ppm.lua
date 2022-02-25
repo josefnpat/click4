@@ -153,5 +153,5 @@ print("255")
 for i = 1,64*64 do
   local v = symbols_clean[i] or {symbol="0",value=0}
   local c = color(v.value+1)
-  print(c[1],c[2],c[3],"# ["..i.."] "..v.symbol.."("..v.value..")")
+  print(c[1],c[2],c[3],"# ["..(i-1).."] "..v.symbol.."("..v.value..")")
 end
