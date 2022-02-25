@@ -128,7 +128,7 @@ table.insert(ops,{
 table.insert(ops,{
   label = "SAVE",
   info = "Save contents of R0 to X[R1+R2], Y[R3+R4].",
-  short = "X[R*16+R2]+Y[R3*16+R4]=R0",
+  short = "X[R1*16+R2]+Y[R3*16+R4]=R0",
   sound = "F#",
   exe = function(self)
     local x = (self.registers[1])*16 + self.registers[2]
