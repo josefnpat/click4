@@ -179,6 +179,7 @@ database = databaselib.new{width=width}
 function love.load()
   set_res()
   load_cart_from_image(autoload and cart_filename or "default.png")
+  maxw = 0
 end
 
 function love.draw()
