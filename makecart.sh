@@ -5,8 +5,14 @@ help()
     echo 'usage: makecart.sh code background output'
 }
 
+if [ "$1" = "-h" -o "$1" = "--help" ] ; then
+    help
+    exit
+fi
+
 if [ -z "$1" ] ; then
     echo 'makecart: missing code operand'
+    help
     exit 1
 fi
 
@@ -26,10 +32,7 @@ code=$1
 background=$2
 output=$3
 
-base="$(basename -s .click4 $1)"
-#temp_ppm=temp.ppm
 temp_ppm="$(mktemp --suffix=.ppm)"
-#temp_code=temp.png
 temp_code="$(mktemp --suffix=.png)"
 
 lua click42ppm.lua ${code} > ${temp_ppm}
