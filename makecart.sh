@@ -36,7 +36,7 @@ temp_ppm="$(mktemp --suffix=.ppm)"
 temp_code="$(mktemp --suffix=.png)"
 
 lua click42ppm.lua ${code} > ${temp_ppm}
-magick ${temp_ppm} -transparent "rgb(31,31,31)" ${temp_code}
+convert ${temp_ppm} -transparent "rgb(31,31,31)" ${temp_code}
 convert ${background} ${temp_code} -gravity east -flatten ${output}
 
 rm ${temp_ppm}
