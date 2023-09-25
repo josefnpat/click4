@@ -35,6 +35,6 @@ To close the context menu, **Press Escape**.
 
 ## Documentation:
 
-Full op code documentation can be found [here](docs.md).
+Full op-code documentation can be found [here](docs.md).
 
-Usage and Language Specification can be found [here](usage_and_lang_spec.md)
+There is a text format for Click4 carts (`.click4`), and a tool for converting it to cart images (`makecart.sh`). The documentation for this format and tool can be found [here](usage_and_lang_spec.md).

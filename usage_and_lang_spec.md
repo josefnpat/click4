@@ -1,23 +1,33 @@
 # Click4 Usage and Language Specification
 
-While Click4 only interprets a Click4 Cart (e.g. a 64x64 PNG), there is a way to circumvent the use of the Click4 fantasy console.
+While Click4 only interprets a Click4 Cart (e.g. a 64x64 PNG), there is a way to circumvent the use of the Click4 fantasy console editor.
 
-Using a text editor of your choice, the [click42ppm.lua](https://github.com/josefnpat/click4/blob/master/click42ppm.lua) script will convert source code into a PPM image file. Using ImageMagick (or any image renderer that can convert PPM to PNG) will give you an output that Click4 can interpret. This specific workflow is wrapped in [makecart.sh](https://github.com/josefnpat/click4/blob/master/makecart.sh).
+Using a text editor of your choice, the [click42ppm.lua](https://github.com/josefnpat/click4/blob/master/click42ppm.lua) script will convert source code into a PPM image file. Using ImageMagick (or any image renderer that can convert PPM to PNG) will give you an output that Click4 can interpret.
 
-This document seeks to outline the usage and language specification that is used in the \*.click4 file format.
+Rather than performing these steps manually however, most users will prefer to use the [makecart.sh](https://github.com/josefnpat/click4/blob/master/makecart.sh) script.
+
+This document aims to outline the usage of `makecart.sh` and the format of the language used in \*.click4 files.
 
 ## Usage
 
 The easiest way to convert a \*.click4 file to a Click4 \*.png is to use the `makecart.sh` script.
 
-Basic usage is as follows:
-> `sh makecart.sh code background output`
+This script depends on other files in the Click4 repository, so the best way to run it is to clone the entire repo with `git clone https://github.com/josefnpat/click4`.
+
+You will also need to have `lua` and `imagemagick` installed. The command to do so varies by OS and distribution.
+
+Usage of `makecart.sh` is as follows:
+> `./makecart.sh code background output`
+
+You must be in the click4 directory to use `makecart.sh`
 
 Here is an example:
 > `sh makecart.sh cart_templates/default.click4 \
 > cart_templates/default_bg.png output.png`
 
 This creates the default cart, [default.click4](https://github.com/josefnpat/click4/blob/master/cart_templates/default.click4).
+
+The background image can be any 64x64px image you would like to overlay the Click4 program onto, but for best results, it should use the Click4 color palette.
 
 ## Language Specification
 
